@@ -1,53 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const ContactForm = ({ onSubmit }) => {
+  const [contact, setContact] = useState({ name: '', number: '' });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setContact((prevContact) => ({
+      ...prevContact,
+      [name]: value,
+    }));
   };
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    this.setState({ name: '', number: '' });
+    onSubmit(contact);
+    setContact({ name: '', number: '' });
   };
 
-  render() {
-    const { name, number } = this.state;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          required
-          value={name}
-          onChange={this.handleChange}
-        />
-        <input
-          type="tel"
-          name="number"
-          placeholder="Phone Number"
-          required
-          value={number}
-          onChange={this.handleChange}
-        />
-        <button type="submit">Add Contact</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        required
+        value={contact.name}
+        onChange={handleChange}
+      />
+      <input
+        type="tel"
+        name="number"
+        placeholder="Phone Number"
+        required
+        value={contact.number}
+        onChange={handleChange}
+      />
+      <button type="submit">Add Contact</button>
+    </form>
+  );
+};
 
 ContactForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  onLoadContacts: PropTypes.func.isRequired,
-  contacts: PropTypes.array.isRequired,
 };
 
 export default ContactForm;
